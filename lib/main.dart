@@ -3,9 +3,9 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
- 
+
 void main() => runApp(MyApp());
- 
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,17 @@ List<DateTime> absentDates = [
 ];
 
 class _CalendarPageState extends State<CalendarPage> {
-  
+  //function to get event on the date clicked
+  void getEvent() {
+    DateTime date = DateTime.now();
+    print('selected date ' +
+        date.day.toString() +
+        date.month.toString() +
+        date.year.toString() +
+        ' ' +
+        date.toString());
+  }
+
   static Widget _presentIcon(String day) => Container(
         decoration: BoxDecoration(
           color: Colors.green,
@@ -151,22 +161,23 @@ class _CalendarPageState extends State<CalendarPage> {
             presentDates[i].day.toString(),
           ),
         ),
-      );}
+      );
+    }
 
-      for (int i = 0; i < lenAbsent; i++) {
-        _markedDateMap.add(
-          absentDates[i],
-          Event(
-            date: absentDates[i],
-            title: 'Day Absent',
-            icon: _absentIcon(
-              absentDates[i].day.toString(),
-            ),
+    for (int i = 0; i < lenAbsent; i++) {
+      _markedDateMap.add(
+        absentDates[i],
+        Event(
+          date: absentDates[i],
+          title: 'Day Absent',
+          icon: _absentIcon(
+            absentDates[i].day.toString(),
           ),
-        );
-      }
-    
+        ),
+      );
+    }
 
+    //customize the calender here
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
       height: cHeight * 0.54,
       weekendTextStyle: TextStyle(
@@ -176,6 +187,9 @@ class _CalendarPageState extends State<CalendarPage> {
       markedDatesMap: _markedDateMap,
       markedDateShowIcon: true,
       markedDateIconMaxShown: 1,
+      onDayPressed: (DateTime date, List<Event> events) {
+        this.setState(() => getEvent()); //refer to function above
+      },
       markedDateMoreShowTotal:
           null, // null for not showing hidden events indicator
       markedDateIconBuilder: (event) {
@@ -184,15 +198,14 @@ class _CalendarPageState extends State<CalendarPage> {
     );
 
     return SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
           _calendarCarouselNoHeader,
-            markerRepresent(Colors.red, "Absent"),
-            markerRepresent(Colors.green, "Present"),
-          ],
-        ),
-      
+          markerRepresent(Colors.red, "Absent"),
+          markerRepresent(Colors.green, "Present"),
+        ],
+      ),
     );
   }
 
